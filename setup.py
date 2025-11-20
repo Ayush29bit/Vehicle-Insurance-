@@ -4,6 +4,6 @@ setup(
     name="src",
     version="0.0.1",
     author="Ayush",
-    author_email="vikashdas770@gmail.com",
+    author_email="ayushzztiwari69@gmail.com",
     packages=find_packages()
 ) 
