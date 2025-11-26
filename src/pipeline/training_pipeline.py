@@ -5,17 +5,17 @@ from src.logger import logging
 from src.components.data_ingestion import DataIngestion
 from src.components.data_validation import DataValidation
 from src.components.data_transformation import DataTransformation
-#from src.components.model_trainer import ModelTrainer
+from src.components.model_trainer import ModelTrainer
 #from src.components.model_evaluation import ModelEvaluation
 #from src.components.model_pusher import ModelPusher
 
-from src.entity.config_entity import (DataIngestionConfig, DataTransformationConfig, DataValidationConfig)
-#                                          ModelTrainerConfig,
+from src.entity.config_entity import (DataIngestionConfig, DataTransformationConfig, DataValidationConfig, ModelTrainerConfig)
+                                         
 #                                          ModelEvaluationConfig,
 #                                          ModelPusherConfig)
                                           
-from src.entity.artifact_entity import (DataIngestionArtifact, DataTransformationArtifact, DataValidationArtifact)
-#                                           ModelTrainerArtifact,
+from src.entity.artifact_entity import (DataIngestionArtifact, DataTransformationArtifact, DataValidationArtifact,ModelTrainerArtifact)
+#                                           
 #                                            ModelEvaluationArtifact,
 #                                            ModelPusherArtifact)
 
@@ -24,7 +24,7 @@ class TrainPipeline:
         self.data_ingestion_config = DataIngestionConfig()
         self.data_validation_config = DataValidationConfig()
         self.data_transformation_config = DataTransformationConfig()
-        #self.model_trainer_config = ModelTrainerConfig()
+        self.model_trainer_config = ModelTrainerConfig()
         #self.model_evaluation_config = ModelEvaluationConfig()
         #self.model_pusher_config = ModelPusherConfig()
 
@@ -75,7 +75,23 @@ class TrainPipeline:
             logging.info("Exited the start_data_transformation method of TrainPipeline class")  
             return data_transformation_artifact
         except Exception as e:
-            raise MyException(e, sys) from e                      
+            raise MyException(e, sys) from e     
+
+
+    def start_model_trainer(self, data_transformation_artifact: DataTransformationArtifact) -> ModelTrainerArtifact:
+        """
+        This method of TrainPipeline class is responsible for starting model trainer component
+        """
+        try:
+            logging.info("Entered the start_model_trainer method of TrainPipeline class")
+            model_trainer = ModelTrainer(data_transformation_artifact=data_transformation_artifact,
+                                         model_trainer_config=self.model_trainer_config)    
+            model_trainer_artifact = model_trainer.initiate_model_trainer()
+            logging.info("Exited the start_model_trainer method of TrainPipeline class")
+            return model_trainer_artifact
+        except Exception as e:
+            raise MyException(e, sys) from e
+
         
     def run_pipeline(self, ) -> None:
         """
